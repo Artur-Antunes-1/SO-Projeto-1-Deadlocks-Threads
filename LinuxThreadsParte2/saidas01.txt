@@ -1,0 +1,101 @@
+artur@artur-VirtualBox:~/documentos$ ./barbearia 2 3 5 2
+Barbearia aberta com 2 barbeiro(s) e 3 cadeira(s) de espera.
+
+Barbeiro 1 está dormindo (sem clientes).
+Barbeiro 2 está dormindo (sem clientes).
+>> Cliente 1 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 1
+Barbeiro 1 foi acordado por um cliente.
+Barbeiro 1 chamou um cliente. Clientes na espera: 0
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 2 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 1
+Barbeiro 2 foi acordado por um cliente.
+Barbeiro 2 chamou um cliente. Clientes na espera: 0
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 3 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 1
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 0
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 4 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 1
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 0
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 5 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 1
+>> Cliente 6 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 1
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 7 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 1
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 8 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 1
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 9 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 1
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 10 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 1
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 11 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 1
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 12 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 2
+>> Cliente 13 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 2
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 14 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 2
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 15 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 2
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 16 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 2
+Barbeiro 2 está cortando o cabelo...
+>> Cliente 17 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+>> Cliente 18 chegou na barbearia.
+   Barbearia cheia, cliente foi embora.
+Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 2
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 19 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 2
+Barbeiro 2 está cortando o cabelo...
+=>> Cliente 20 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+=Barbeiro 1 terminou o corte.
+Barbeiro 1 chamou um cliente. Clientes na espera: 2
+Barbeiro 1 está cortando o cabelo...
+>> Cliente 21 chegou na barbearia.
+   Cliente sentou para esperar. Total na espera: 3
+Barbeiro 2 terminou o corte.
+Barbeiro 2 chamou um cliente. Clientes na espera: 2
+Barbeiro 2 está cortando o cabelo...
