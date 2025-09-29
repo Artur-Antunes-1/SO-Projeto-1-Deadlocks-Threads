@@ -1,0 +1,213 @@
+1. Sistema Produtor/Consumidor com Dois Buffers (X → B1 → Y → B2 → Z)
+Este problema descreve uma linha de produção (pipeline) com três estágios de processos e dois buffers intermediários. Utilizaremos semáforos para controlar o fluxo.
+Semáforos Necessários:
+Para o Buffer B1 (capacidade N1):
+vazio1: Semáforo para contar os espaços vazios em B1. Valor inicial: N1.
+cheio1: Semáforo para contar os espaços preenchidos em B1. Valor inicial: 0.
+mutex1: Semáforo binário (mutex) para garantir acesso exclusivo a B1. Valor inicial: 1.
+Para o Buffer B2 (capacidade N2):
+vazio2: Semáforo para contar os espaços vazios em B2. Valor inicial: N2.
+cheio2: Semáforo para contar os espaços preenchidos em B2. Valor inicial: 0.
+mutex2: Semáforo binário (mutex) para garantir acesso exclusivo a B2. Valor inicial: 1.
+Pseudo-código:
+// Pseudo-código do Processo X (Produtor para B1)
+void processo_X() {
+    while (1) {
+        item = produz_item();
+        sem_down(vazio1);       // Espera por um espaço vazio em B1
+        sem_down(mutex1);       // Entra na região crítica de B1
+        insere(B1, item);
+        sem_up(mutex1);         // Sai da região crítica de B1
+        sem_up(cheio1);         // Sinaliza que há um novo item em B1
+    }
+}
+
+// Pseudo-código do Processo Y (Consumidor de B1, Produtor para B2)
+void processo_Y() {
+    while (1) {
+        // Parte Consumidora (de B1)
+        sem_down(cheio1);       // Espera por um item em B1
+        sem_down(mutex1);       // Entra na região crítica de B1
+        item = retira(B1);
+        sem_up(mutex1);         // Sai da região crítica de B1
+        sem_up(vazio1);         // Sinaliza que há um novo espaço vazio em B1
+        
+        item_transformado = transforma(item);
+        
+        // Parte Produtora (para B2)
+        sem_down(vazio2);       // Espera por um espaço vazio em B2
+        sem_down(mutex2);       // Entra na região crítica de B2
+        insere(B2, item_transformado);
+        sem_up(mutex2);         // Sai da região crítica de B2
+        sem_up(cheio2);         // Sinaliza que há um novo item em B2
+    }
+}
+
+// Pseudo-código do Processo Z (Consumidor de B2)
+void processo_Z() {
+    while (1) {
+        sem_down(cheio2);       // Espera por um item em B2
+        sem_down(mutex2);       // Entra na região crítica de B2
+        item = retira(B2);
+        sem_up(mutex2);         // Sai da região crítica de B2
+        sem_up(vazio2);         // Sinaliza que há um novo espaço vazio em B2
+        consome_item(item);
+    }
+}
+
+2. Jantar dos Filósofos: Risco de Impasse (Deadlock)
+Explicação do Impasse:
+A solução apresentada pode levar a um impasse (deadlock) devido à possibilidade de espera circular. O impasse ocorre no seguinte cenário:
+Todos os 5 filósofos decidem comer ao mesmo tempo.
+Cada filósofo i executa a linha 10: sem_down(garfo[i]), pegando com sucesso o garfo à sua esquerda.
+Agora, todos os 5 filósofos estão segurando um garfo.
+Em seguida, cada filósofo i tenta executar a linha 11: sem_down(garfo[(i+1) % N]), para pegar o garfo à sua direita.
+No entanto, o garfo à direita de cada filósofo já foi pego pelo seu vizinho da direita.
+Como resultado, todos os filósofos ficarão bloqueados para sempre, cada um esperando por um recurso (o garfo direito) que está sendo retido por outro processo que, por sua vez, também está em espera. Isso completa a condição de espera circular e caracteriza o deadlock.
+Modificação para Eliminar o Risco:
+A maneira mais simples de eliminar o impasse é quebrar a simetria da espera. Faremos com que um dos filósofos (por exemplo, o último) pegue os garfos na ordem inversa (direita e depois esquerda).
+1 #define N 5
+2 
+3 sem_t garfo[5]; // 5 semáforos iniciados em 1
+4 
+5 void filosofo (int i)
+6 {
+7   while (1)
+8   {
+9     medita();
+10
+11    // Estratégia assimétrica para evitar o impasse
+12    if (i == N - 1) { // O último filósofo pega os garfos na ordem inversa
+13        sem_down(garfo[(i+1) % N]); // Garfo da direita primeiro
+14        sem_down(garfo[i]);         // Garfo da esquerda depois
+15    } else { // Os outros filósofos mantêm a ordem original
+16        sem_down(garfo[i]);         // Garfo da esquerda primeiro
+17        sem_down(garfo[(i+1) % N]); // Garfo da direita depois
+18    }
+19
+20    come();
+21    sem_up(garfo[i]);
+22    sem_up(garfo[(i+1) % N]);
+23  }
+24 }
+
+3. Sincronização de Robôs (Bart → Lisa → Maggie → Lisa → Bart → ...)
+Para forçar essa sequência específica, precisamos de semáforos que atuem como "bastões", sendo passados de uma thread para outra para dar a vez. Como Lisa se move em dois momentos distintos na sequência, precisamos de semáforos separados para suas duas aparições.
+Semáforos e Valores Iniciais:
+sem_t vez_bart;     // Valor inicial: 1 (Bart começa)
+sem_t vez_lisa_1;   // Valor inicial: 0
+sem_t vez_maggie;   // Valor inicial: 0
+sem_t vez_lisa_2;   // Valor inicial: 0
+
+Pseudo-código das Threads:
+// Thread que controla o robô Bart
+void thread_bart() {
+    while (1) {
+        sem_down(vez_bart);   // Espera pela sua vez
+        move();               // Move o robô Bart
+        sem_up(vez_lisa_1);   // Passa a vez para a primeira aparição de Lisa
+    }
+}
+
+// Thread que controla o robô Lisa
+void thread_lisa() {
+    while (1) {
+        // Primeira parte do ciclo de Lisa
+        sem_down(vez_lisa_1); // Espera a vez vinda de Bart
+        move();               // Move o robô Lisa
+        sem_up(vez_maggie);   // Passa a vez para Maggie
+
+        // Segunda parte do ciclo de Lisa
+        sem_down(vez_lisa_2); // Espera a vez vinda de Maggie
+        move();               // Move o robô Lisa novamente
+        sem_up(vez_bart);     // Passa a vez de volta para Bart
+    }
+}
+
+// Thread que controla o robô Maggie
+void thread_maggie() {
+    while (1) {
+        sem_down(vez_maggie); // Espera pela sua vez
+        move();               // Move o robô Maggie
+        sem_up(vez_lisa_2);   // Passa a vez para a segunda aparição de Lisa
+    }
+}
+
+4. Implementação de Rendez-Vous com Semáforos
+O Rendez-Vous é um ponto de encontro para duas threads. A primeira que chega deve esperar pela segunda. A segunda, ao chegar, libera a primeira, e ambas prosseguem.
+1 // estrutura que representa um RV
+2 typedef struct rv_t
+3 {
+4   int contador;
+5   sem_t mutex;
+6   sem_t sem_espera_1; // Semáforo para o primeiro a chegar esperar
+7   sem_t sem_espera_2; // Semáforo para o segundo a chegar esperar
+8 } rv_t;
+9 
+10 // operador de espera no RV
+11 void rv_wait(rv_t *rv)
+12 {
+13   sem_down(&rv->mutex);
+14   rv->contador++;
+15   if (rv->contador == 2) { // Sou o segundo a chegar
+16     sem_up(&rv->sem_espera_1); // Libero o primeiro
+17     sem_down(&rv->sem_espera_2); // Espero o primeiro me liberar
+18   } else { // Sou o primeiro a chegar
+19     sem_up(&rv->mutex); // Libero o mutex antes de esperar
+20     sem_down(&rv->sem_espera_1); // Espero pelo segundo
+21     rv->contador--; // Reseto o contador
+22     sem_up(&rv->sem_espera_2); // Libero o segundo
+23     return; // O primeiro retorna aqui sem re-adquirir o mutex
+24   }
+25   rv->contador--; // Reseto o contador
+26   sem_up(&rv->mutex);
+27 }
+28 
+29 // inicialização do RV
+30 void rv_init(rv_t *rv)
+31 {
+32   rv->contador = 0;
+33   sem_init(&rv->mutex, 0, 1);
+34   sem_init(&rv->sem_espera_1, 0, 0);
+35   sem_init(&rv->sem_espera_2, 0, 0);
+36 }
+
+5. Implementação de Barreira com Semáforos
+A Barreira é uma generalização do Rendez-Vous para N threads. Nenhuma thread prossegue até que todas as N tenham chegado à barreira.
+1 // estrutura que representa uma barreira
+2 typedef struct barrier_t
+3 {
+4   int N;              // Número total de threads
+5   int contador;         // Contador de threads que chegaram
+6   sem_t mutex;        // Para proteger o contador
+7   sem_t sem_barreira; // Semáforo onde as threads esperam
+8 } barrier_t;
+9 
+10 // operador de espera na barreira
+11 void barrier_wait(barrier_t *barrier)
+12 {
+13   sem_down(&barrier->mutex);
+14   barrier->contador++;
+15   if (barrier->contador == barrier->N) { // Sou a última thread a chegar
+16     // Libero todas as N-1 threads que estão esperando
+17     for (int i = 0; i < barrier->N - 1; i++) {
+18       sem_up(&barrier->sem_barreira);
+19     }
+20     // Reseto o contador para a próxima vez que a barreira for usada
+21     barrier->contador = 0;
+22     sem_up(&barrier->mutex);
+23   } else { // Ainda não sou a última
+24     sem_up(&barrier->mutex); // Libero o mutex ANTES de esperar
+25     sem_down(&barrier->sem_barreira);
+26   }
+27 }
+28 
+29 // inicialização de barreira para N processos
+30 void barrier_init(barrier_t *barrier, int N)
+31 {
+32   barrier->N = N;
+33   barrier->contador = 0;
+34   sem_init(&barrier->mutex, 0, 1);
+35   sem_init(&barrier->sem_barreira, 0, 0);
+36 }
+
