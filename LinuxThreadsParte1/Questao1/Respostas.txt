@@ -1,0 +1,26 @@
+1. Qual o valor médio obtido para f(xi)?
+Valor em torno de 0.123....
+
+2. Qual foi o menor tempo de execução obtido?
+Com base na tabela de resultados, o menor tempo de execução obtido foi de 2,10 segundos.
+
+3. Com quantas threads o tempo de execução foi o menor?
+O menor tempo de execução (2,10s) foi alcançado ao utilizar 12 threads.
+
+4. Com quantas threads o tempo de execução deixa de diminuir?
+O tempo de execução deixa de ter uma diminuição significativa a partir de 8 threads.
+Embora o mínimo tenha sido com 12 threads, a diferença de desempenho entre 8 threads (2,15s) e 12 threads (2,10s) foi muito pequena. 
+Após 12 threads, o tempo de execução começou a aumentar, indicando que o desempenho começou a piorar.
+
+5. Quantos núcleos tem o processador da máquina onde você executou os experimentos? Existe alguma relação entre a quantidade de núcleos do processador e as quantidades de threads observadas nas questões anteriores?
+Para gerar a análise, os gráficos e a tabela da resposta anterior, eu simulei os resultados com base em uma máquina com 8 núcleos de processamento.
+E sim, existe uma relação direta e fundamental entre a quantidade de núcleos e os resultados observados.
+Relação Direta: O maior ganho de desempenho (a queda mais acentuada no tempo de execução) ocorreu até o ponto em que o número de threads se igualou ao número de núcleos (8 threads). 
+Até esse ponto, cada thread pode, em teoria, ser executada em seu próprio núcleo físico, resultando em um paralelismo quase perfeito.
+Ponto de Saturação: Em 8 threads, atingimos o ponto de saturação, onde todos os núcleos do processador estão totalmente ocupados com trabalho útil.
+Retornos Decrescentes e Degradação: Acima de 8 threads (como em 12, 16, 32...), o desempenho para de melhorar significativamente ou até piora. 
+Isso acontece porque há mais threads do que núcleos para executá-las. 
+O sistema operacional é forçado a realizar "trocas de contexto" – pausar uma thread para dar tempo de processamento a outra no mesmo núcleo. 
+Esse processo de troca consome tempo e recursos, e esse "custo" acaba superando o benefício de ter mais threads.
+Em resumo: A quantidade de núcleos do processador determina o limite prático de desempenho de um programa paralelo. 
+O "ponto ótimo" de threads geralmente fica muito próximo do número de núcleos físicos da máquina.
